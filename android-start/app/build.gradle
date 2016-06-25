@@ -19,6 +19,17 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        debug {
+            storeFile file("../signing/develop.jks")
+            storePassword "develop"
+            keyAlias "develop"
+            keyPassword "develop"
+        }
+        release {
+            // NOTE: add signing configuration for release build in `gradle.properties` or `gradlew environment`. Check out `signing.gradle`
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
