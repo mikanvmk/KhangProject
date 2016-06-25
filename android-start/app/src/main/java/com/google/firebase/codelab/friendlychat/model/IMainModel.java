@@ -28,4 +28,8 @@ public interface IMainModel {
     void fetchConfig();
 
     DatabaseReference getChildFirebaseDatabaseRefernce(String messagesChild);
+
+    void newGoogleApiClient();
+
+    void sendInvitation(int REQUEST_INVITE);
 }

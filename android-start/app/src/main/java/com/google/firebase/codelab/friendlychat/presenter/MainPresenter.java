@@ -25,6 +25,16 @@ public class MainPresenter implements IMainPresenter {
         return mainView.getContext();
     }
 
+    @Override
+    public void newGoogleApiClient() {
+        model.newGoogleApiClient();
+    }
+
+    @Override
+    public void sendInvitation(int REQUEST_INVITE) {
+        model.sendInvitation(REQUEST_INVITE);
+    }
+
     private IMainView mainView;
 
     @Override

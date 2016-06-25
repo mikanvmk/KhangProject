@@ -1,5 +1,6 @@
 package com.google.firebase.codelab.friendlychat.model;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,11 +8,16 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.codelab.friendlychat.ChatApplication;
+import com.google.firebase.codelab.friendlychat.R;
 import com.google.firebase.codelab.friendlychat.presenter.IMainPresenter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -46,7 +52,7 @@ public class MainModel implements IMainModel {
     @Override
     public void FirebaseAnalyticsLogEvent(String sent) {
         Bundle payload = new Bundle();
-        payload.putString(FirebaseAnalytics.Param.VALUE, "sent");
+        payload.putString(FirebaseAnalytics.Param.VALUE, sent);
         getFirebaseAnalytics().logEvent(FirebaseAnalytics.Event.SHARE,
                 payload);
     }
@@ -58,7 +64,6 @@ public class MainModel implements IMainModel {
         if (mFirebaseUser == null) {
             // Not signed in, launch the Sign In activity
             presenter.gotoSignIn();
-            return;
         } else {
             presenter.getUser();
         }
@@ -144,5 +149,22 @@ public class MainModel implements IMainModel {
     @Override
     public DatabaseReference getChildFirebaseDatabaseRefernce(String messagesChild) {
         return FirebaseDatabase.getInstance().getReference();
+    }
+
+    @Override
+    public void newGoogleApiClient() {
+        new GoogleApiClient.Builder(ChatApplication.getContext())
+                .enableAutoManage(presenter.getMainView() /* FragmentActivity */, presenter.getMainView() /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
+    }
+
+    @Override
+    public void sendInvitation(int REQUEST_INVITE) {
+        Intent intent = new AppInviteInvitation.IntentBuilder(ChatApplication.getContext().getString(R.string.invitation_title))
+                .setMessage(ChatApplication.getContext().getString(R.string.invitation_message))
+                .setCallToActionText(ChatApplication.getContext().getString(R.string.invitation_cta))
+                .build();
+        presenter.getMainView().startActivityForResult(intent, REQUEST_INVITE);
     }
 }

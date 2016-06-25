@@ -42,13 +42,11 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.codelab.friendlychat.common.CodelabPreferences;
 import com.google.firebase.codelab.friendlychat.common.FriendlyMessage;
 import com.google.firebase.codelab.friendlychat.R;
-import com.google.firebase.codelab.friendlychat.SignInActivity;
 import com.google.firebase.codelab.friendlychat.presenter.IMainPresenter;
 import com.google.firebase.codelab.friendlychat.presenter.MainPresenter;
 
@@ -106,10 +104,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         // Initialize Firebase Auth
         presenter.InitializeFirebaseAuth();
 
-        new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API)
-                .build();
+        //new google Api client
+        presenter.newGoogleApiClient();
 
         // Initialize ProgressBar and RecyclerView.
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -196,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.invite_menu:
-                sendInvitation();
+                presenter.sendInvitation(REQUEST_INVITE);
                 return true;
             case R.id.fresh_config_menu:
                 presenter.fetchConfig();
@@ -282,13 +278,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         mMessageEditText.setText("");
     }
 
-    private void sendInvitation() {
-        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                .setMessage(getString(R.string.invitation_message))
-                .setCallToActionText(getString(R.string.invitation_cta))
-                .build();
-        startActivityForResult(intent, REQUEST_INVITE);
-    }
     private void newChildEntries() {
         mFirebaseAdapter = new FirebaseRecyclerAdapter<FriendlyMessage,
                 MessageViewHolder>(

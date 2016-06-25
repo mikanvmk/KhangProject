@@ -37,4 +37,8 @@ public interface IMainPresenter {
     DatabaseReference getChildFirebaseDatabaseReference(String messagesChild);
 
     MainActivity getMainView();
+
+    void newGoogleApiClient();
+
+    void sendInvitation(int REQUEST_INVITE);
 }
